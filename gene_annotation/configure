@@ -1,2 +1,17 @@
-PATH_TO_BLAST=
+PATH_TO_BLAST=/Users/acward/Tools/ncbi-blast-2.7.1+/bin
 PATH_TO_HMMR=
+
+#Path to where output will be ending with the name of the directory (job name)
+job_name=/Users/acward/evo-Gene/gene_annotation/python_scripts/testing_1
+
+#additional genomes can be added by using genome_N and genome_name 
+genome_1=/Users/acward/testing_hmmr/scaffolds.fasta
+genome_1_name=earthworm
+
+
+#addition genes can be added by using gene_N and gene_N_name
+gene_1=/Users/acward/evo-Gene/gene_annotation/test_datasets/genes/RAD51.aa.fasta
+gene_1_name=RAD51
+
+gene_2=/Users/acward/evo-Gene/gene_annotation/test_datasets/genes/DMC1.aa.fasta
+gene_2_name=DMC1

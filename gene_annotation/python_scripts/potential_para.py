@@ -1,6 +1,23 @@
 #!/usr/bin/python
-
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description='Clustering Tool')
+
+parser.add_argument("master_fasta", type=str, help='Path to master fasta file (R)')
+parser.add_argument("query", type=str, help='Path to file of fasta header queries (R)')
+parser.add_argument("cluster_size", type=int, help='Cluster count (R)')
+parser.add_argument("-n", type=str, help='Output name (O)', required=False, default="cluster")
+parser.add_argument("-d", type=str, help='Path to output destination - requires / at end of path (O)', default="")
+
+args = parser.parse_args()
+
+#arguments
+master_path = args.master_fasta
+query_path = args.query
+cluster_size = args.cluster_size
+output_name = args.n #<---- fix this
+output_destination = args.d
 
 i = 1
 
@@ -10,7 +27,7 @@ start_per_gene = []
 end_per_gene = []
 frame_per_gene = []
 
-output = file("shared_hits2.out", 'w+')
+output = file("shared_hits_test.out", 'w+')
 output2 = file("DMC_unique.out", 'w+')
 
 while i < len(sys.argv):
@@ -74,7 +91,7 @@ for current_gene in ids_per_gene[0]:
                    final_end = end2
 
 
-               output.write(str(ids_per_gene[0][x]) + "\t" + str(final_start) + "\t" + str(final_end) + "\t" + str(frame_per_gene[0][x]) + str(frame_per_gene[1][x]) + "\n")
+               output.write(str(ids_per_gene[0][x]) + "\t" + str(final_start) + "\t" + str(final_end) + "\t" + str(frame_per_gene[0][x]) + "\t" + str(frame_per_gene[1][x]) + "\n")
 
                found = True
 

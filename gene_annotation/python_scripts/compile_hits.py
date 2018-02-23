@@ -1,7 +1,8 @@
 #!/usr/bin/python
-
 import sys
 
+
+#adds hit information to their respected input list
 def addHit(unique_hit_ids, hit_start, hit_end, id, frame, sstart, send):
 
     unique_hit_ids.append(id)
@@ -17,6 +18,7 @@ def addHit(unique_hit_ids, hit_start, hit_end, id, frame, sstart, send):
         hit_end.append(send)
 
 in_file = sys.argv[1]
+out_file = open(sys.argv[2], 'w')
 
 unique_hit_ids = []
 hit_start = []
@@ -85,11 +87,12 @@ for line in open(in_file, 'r'):
     else:
         addHit(unique_hit_ids, hit_start, hit_end, sseqid, sframe, sstart, send)
 
-
 i = 0
 while i < len(unique_hit_ids):
 
     difference = int(hit_end[i]) - int(hit_start[i])
-    print(unique_hit_ids[i] + "\t" + hit_start[i] + "\t" + hit_end[i] + "\t" + str(difference))
+    out_file.write(unique_hit_ids[i] + " " + hit_start[i] + "-" + hit_end[i] + "\n")
 
     i+=1
+
+out_file.close()
