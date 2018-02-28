@@ -1,6 +1,10 @@
 import os
 import re
+import copy
+
 from blast import ncbi_blast
+from Genome import Genome
+from Gene import Gene
 
 class Annotation_Configuration:
 
@@ -11,6 +15,8 @@ class Annotation_Configuration:
     gene_Found = False
 
 
+    genomes = []
+
     def __init__(self):
 
         self.start_path = os.getcwd()
@@ -20,7 +26,10 @@ class Annotation_Configuration:
         self.job_path=""
 
         self.current_genome=""
+        self.current_genome_path=""
+
         self.current_gene=""
+        self.current_gene_path=""
 
     def createDirectory(self, variable, value):
 
@@ -35,15 +44,24 @@ class Annotation_Configuration:
             if not self.genome_Found:
                 os.chdir("genomes")
                 os.makedirs(variable)
+                os.mkdir(variable + "/genes")
                 os.chdir(variable)
 
-                self.blast.makeblastdb(value, variable)
-
                 self.current_genome = variable
+                self.current_genome_path = value
                 self.genome_Found = True
 
+            #create Genome object
             elif self.genome_Found:
-                file = open("genomes/" + self.current_genome + "/README", 'w')
+                os.chdir("genomes/" + self.current_genome)
+
+                #create genome object
+                self.genomes.append(Genome(value, self.current_genome_path, os.getcwd()))
+
+                # create blast database
+                self.blast.makeblastdb(self.current_genome_path, value)
+
+                file = open("README", 'w')
                 file.write(value)
                 file.close()
 
@@ -53,17 +71,35 @@ class Annotation_Configuration:
         elif m2 is not None:
 
             if not self.gene_Found:
-                os.chdir("genes")
-                os.makedirs(variable)
 
                 self.current_gene = variable
+                self.current_gene_path = value
                 self.gene_Found = True
 
+            #creating Gene object
             elif self.gene_Found:
-                file = open("genes/" + self.current_gene + "/README", 'w')
-                file.write(value)
-                file.close()
 
+                genes = []
+
+                i = 0
+                #creating directories and adding gene object to each genome
+                while i < len(self.genomes):
+                    output_path = "genomes/genome_"+ str(i + 1) + "/genes/" + self.current_gene
+                    os.makedirs(output_path)
+
+                    file = open(output_path + "/README", 'w')
+                    file.write(value)
+                    file.close()
+
+                    genes.append(Gene(value, self.current_gene_path, os.getcwd() + "/" + output_path))
+
+                    i+=1
+
+                for genome in self.genomes:
+                    for gene in genes:
+                        genome.addGene(gene)
+
+                os.chdir(self.job_path)
                 self.gene_Found = False
 
     def configure(self, file):
@@ -95,8 +131,12 @@ class Annotation_Configuration:
                         os.makedirs(self.job_path)
                         os.chdir(self.job_path)
                         os.makedirs("genomes")
-                        os.makedirs("genes")
 
                 else:
                     self.createDirectory(variable, value)
 
+        information = []
+        information.append(self.genomes)
+        information.append(self.blast)
+
+        return information

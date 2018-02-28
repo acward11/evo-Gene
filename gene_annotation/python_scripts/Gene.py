@@ -2,16 +2,16 @@ from Hit import Hit
 
 class Gene:
 
-    def __init__(self, name, path_to_fasta):
+    def __init__(self, name, path_to_fasta, path_to_output):
 
         self.name = name
         self.path_to_fasta = path_to_fasta
+        self.output = path_to_output
 
         self.hits = []
 
-
+    ''''
     def addHit(self, start, end, frame, query_name, evalue):
-
         #add hit if no other hits were found
         if len(self.hits) is 0:
             self.hits.append(Hit(id, start, end, query_name, evalue))
@@ -29,3 +29,4 @@ class Gene:
             return 1
         else:
             return 0
+    '''

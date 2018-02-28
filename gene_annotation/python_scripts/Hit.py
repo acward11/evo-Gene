@@ -29,7 +29,6 @@ class Hit:
         self.hit_queries = []               #names of queries that hit this location
         self.hit_queries.append(query)
 
-
     #updates hit information if need be - returns boolean
     def compareHits(self, start, end, frame, query_name, evalue):
 
