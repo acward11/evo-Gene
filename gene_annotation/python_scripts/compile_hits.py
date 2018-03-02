@@ -4,15 +4,14 @@ from Hit import Hit
 
 class blast_filter:
 
-    def __init__(self):
-        self.hits = []
-        self.hit_count = 0
-
     def filter(self, path, gene, name):
+
+        hits = []
+        hit_count = 0
 
         for line in open(path + "/" + name + ".tblastn", 'r'):
 
-            self.hit_count+=1
+            hit_count+=1
             information = line.split("\t")
 
             query = information[0]         #id for query sequence
@@ -26,27 +25,25 @@ class blast_filter:
             evalue = float(information[7]) #evalue score
 
             #if first hit
-            if len(self.hits) == 0:
-                self.hits.append(Hit(subject, sstart, send, query, evalue, sframe))
+            if len(hits) == 0:
+                hits.append(Hit(subject, sstart, send, query, evalue, sframe))
 
             else:
 
                 found = False
 
-                for hit in self.hits:
+                for hit in hits:
                      #if not unique hit
-                    if hit.compareHits(sstart, send, sframe, query, evalue):
+                    if hit.compareHits(sstart, send, sframe, query, evalue, subject) is True:
                         found = True
                         break
                 if not found:
-                    self.hits.append(Hit(subject, sstart, send, query, evalue, sframe))
+                    hits.append(Hit(subject, sstart, send, query, evalue, sframe))
 
         file = open(path + "/" + name + ".filtered.hits", 'w')
 
-        #print str(hit_count)
-        #print len(hits)
-        for hit in self.hits:
+        for hit in hits:
             file.write(hit.hit_id + "\t" + str(hit.final_start) + "\t" + str(hit.final_end) + "\t" + str(hit.avrg_evalue) + "\n")
         file.close()
 
-        gene.hits = self.hits
+        gene.hits = hits

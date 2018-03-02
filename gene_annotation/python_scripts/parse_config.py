@@ -31,6 +31,8 @@ class Annotation_Configuration:
         self.current_gene=""
         self.current_gene_path=""
 
+        self.genomes = []
+
     def createDirectory(self, variable, value):
 
         m1 = self.p1.match(variable)
@@ -82,7 +84,7 @@ class Annotation_Configuration:
                 genes = []
 
                 i = 0
-                #creating directories and adding gene object to each genome
+                #creating directories and adding gene object to each genomes
                 while i < len(self.genomes):
                     output_path = "genomes/genome_"+ str(i + 1) + "/genes/" + self.current_gene
                     os.makedirs(output_path)
@@ -95,9 +97,10 @@ class Annotation_Configuration:
 
                     i+=1
 
+                x = 0
                 for genome in self.genomes:
-                    for gene in genes:
-                        genome.addGene(gene)
+                    genome.addGene(copy.deepcopy(genes[x]))
+                    x+=1
 
                 os.chdir(self.job_path)
                 self.gene_Found = False

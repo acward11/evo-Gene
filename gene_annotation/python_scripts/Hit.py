@@ -30,9 +30,13 @@ class Hit:
         self.hit_queries.append(query)
 
     #updates hit information if need be - returns boolean
-    def compareHits(self, start, end, frame, query_name, evalue):
+    def compareHits(self, start, end, frame, query_name, evalue, subject):
 
         updated = False
+
+        #check if ids match
+        if subject != self.hit_id:
+            return False
 
         #if hit occured on the negative strand
         if int(frame) < 0:
@@ -42,8 +46,18 @@ class Hit:
             start = end
             end = hold
 
+        if start == self.final_start:
+            if end > self.final_end:
+                self.final_end = end
+            updated = True
+
+        elif end == self.final_end:
+            if start < self.final_start:
+                self.final_start = start
+            updated = True
+
         #check for left update - updates hit_start
-        if start < self.final_start and end >= self.final_start and end <= self.final_end:
+        elif start < self.final_start and end >= self.final_start and end <= self.final_end:
             self.final_start = start
             updated = True
 

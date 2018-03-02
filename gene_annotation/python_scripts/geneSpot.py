@@ -6,9 +6,6 @@ from compile_hits import blast_filter
 from Genome import Genome
 from blast import ncbi_blast
 
-
-
-
 parser = argparse.ArgumentParser(description="Gene Spot")
 
 parser.add_argument("config", type=str, help='Configuration File')
@@ -28,8 +25,22 @@ blast = information[1]
 
 f = blast_filter()
 
+
+print "Starting Gene Search.."
 #tblastn
 for genome in genomes:
     for gene in genome.genes:
+
+        #tblastn - information[0] = path to gene + gene_n; information[1] = gene_name
         information = blast.tblastn(genome, gene)
+
+        print "Filtering.."
+        #Creates consensus hits
         f.filter(information[0], gene, information[1])
+
+        print "Retrieving Sequences"
+        #retrieve sequences
+        fasta = blast.retrieveSeq(genome.output, genome.name, gene.output, gene.name)
+
+        #using protein database, run blastx
+        #for line in open(fasta, 'r'):
