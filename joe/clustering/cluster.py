@@ -36,7 +36,7 @@ count = 1
 for line in file:
     #information = line.split("\t")
     if line[0] != ">":
-        queries.append(">" + line.replace("\n", ''))
+        queries.append(">" + line.replace("\n", '').replace("\r", ''))
     else:
         queries.append(line.replace("\n", ''))
 
@@ -69,9 +69,8 @@ for query in queries:
             elif found is True and sequence_line[0] is ">":
                 break
 
-    if found is False:
-        print "Didn't Find Match"
-    else:
+    if found is True:
         i+=1
+    else: print "Not found"
 
 new_file.close()
