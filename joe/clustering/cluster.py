@@ -49,7 +49,7 @@ for query in queries:
         count += 1
 
     if i == 0:
-        new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count), "w+")
+        new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count) + ".fasta", "w+")
 
     found = False
 
