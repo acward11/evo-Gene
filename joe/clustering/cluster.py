@@ -17,17 +17,15 @@ master_path = args.master_fasta
 query_path = args.query
 cluster_size = args.cluster_size
 output_name = args.n #<---- fix this
-output_destination = args
+output_destination = args.d
 names_path=args.ordered_names
-
-path_length = len(output_destination)
 
 names = []
 
 #open files
 file = open(query_path, 'r') #query file
 file2 = open(master_path, 'r') #master fasta
-file3 = open(name_path, 'r')
+file3 = open(names_path, 'r')
 
 #getting names
 for name in file3:
@@ -36,9 +34,11 @@ for name in file3:
 #read master file
 sequences = file2.readlines()
 
-def sortQueries(file, names):
 
-    cluster = [len(names)] #create new cluster
+def sortQueries(file, names):
+    blah = 0
+    queries = []
+    cluster = [None] * cluster_size #create new cluster
     count = 0
 
     #get queries in list
@@ -46,36 +46,44 @@ def sortQueries(file, names):
 
         x = 0
 
+        found = False
+
         #creating cluster in order
         while x < len(names) and not found:
 
             if query.find(names[x]) is not -1:
-
                 count+=1
                 found = True #move on to next query
 
                 # information = line.split("\t")
-                if line[0] != ">":
-                    cluster[x] = (">" + line.replace("\n", '').replace("\r", ''))
+                if query[0] != ">":
+                    cluster[x] = (">" + query.replace("\n", '').replace("\r", ''))
                 else:
-                    cluster[x] = (line.replace("\n", '').replace("\r", ''))
+                    cluster[x] = (query.replace("\n", '').replace("\r", ''))
 
             x+=1
 
         #is cluster is full then append cluster to queries
         if count == len(names):
-
             a = 0
+            found2 = False
             while a < len(cluster):
-                queries.append(cluster[a])
+                if cluster[a] is None:
+                    found2 = True
                 a+=1
+            if found2 is False:
+                a = 0
+                while a < len(cluster):
 
-            cluster = [len(names)]
+                    queries.append(cluster[a])
+
+                    a+=1
+
+            cluster = [None] * cluster_size
             count = 0
 
         if not found:
             sys.exit("Name not found in query")
-
     return queries
 
 def querySearch(queries, sequences):
@@ -83,17 +91,15 @@ def querySearch(queries, sequences):
     i = 0
     count = 1
 
-    # find quereies in master file - adding cluster_size sequences to file
+    #find quereies in master file - adding cluster_size sequences to file
     for query in queries:
-
         if i == cluster_size:
             new_file.close()
             i = 0
             count += 1
 
         if i == 0:
-            new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count) + ".fasta",
-                            "w+")
+            new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count) + ".fasta", "w+")
 
         found = False
 
@@ -116,13 +122,12 @@ def querySearch(queries, sequences):
         if found is True:
             i += 1
         else:
+            print query
+            print str(count)
             print "Not found"
-
-    new_file.close()
 
 
 print "Starting query search.."
-
 queries = sortQueries(file, names)
 querySearch(queries, sequences)
 
