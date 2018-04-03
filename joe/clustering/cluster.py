@@ -23,8 +23,6 @@ names_path=args.ordered_names
 path_length = len(output_destination)
 
 names = []
-queries = []
-
 
 #open files
 file = open(query_path, 'r') #query file
@@ -38,65 +36,99 @@ for name in file3:
 #read master file
 sequences = file2.readlines()
 
-i = 0
-count = 1
+def sortQueries(file, names):
 
-#get queries in list
-for query in file:
+    cluster = [len(names)] #create new cluster
+    count = 0
 
-    x = 0
-    found = False
+    #get queries in list
+    for query in file:
 
-    #ordering clusters
-    while x < len(names) and not found:
-        
-        if query.find(names[x]) is not -1:
+        x = 0
 
-            found = True #move on to next query
+        #creating cluster in order
+        while x < len(names) and not found:
 
-            # information = line.split("\t")
-            if line[0] != ">":
-                queries.append(">" + line.replace("\n", '').replace("\r", ''))
-            else:
-                queries.append(line.replace("\n", '').replace("\r", ''))
+            if query.find(names[x]) is not -1:
+
+                count+=1
+                found = True #move on to next query
+
+                # information = line.split("\t")
+                if line[0] != ">":
+                    cluster[x] = (">" + line.replace("\n", '').replace("\r", ''))
+                else:
+                    cluster[x] = (line.replace("\n", '').replace("\r", ''))
+
+            x+=1
+
+        #is cluster is full then append cluster to queries
+        if count == len(names):
+
+            a = 0
+            while a < len(cluster):
+                queries.append(cluster[a])
+                a+=1
+
+            cluster = [len(names)]
+            count = 0
+
+        if not found:
+            sys.exit("Name not found in query")
+
+    return queries
+
+def querySearch(queries, sequences):
+
+    i = 0
+    count = 1
+
+    # find quereies in master file - adding cluster_size sequences to file
+    for query in queries:
+
+        if i == cluster_size:
+            new_file.close()
+            i = 0
+            count += 1
+
+        if i == 0:
+            new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count) + ".fasta",
+                            "w+")
+
+        found = False
+
+        for sequence_line in sequences:
+
+            sequence_line = sequence_line.replace("\n", "").split(" ")[0]
+
+            if len(sequence_line) > 0:
+
+                if query == sequence_line and found is False:
+                    # print query + "\t" + sequence_line
+                    new_file.write(sequence_line + "\n")
+                    found = True
+                elif found is True and sequence_line[0] != ">":
+                    new_file.write(sequence_line + "\n")
+
+                elif found is True and sequence_line[0] is ">":
+                    break
+
+        if found is True:
+            i += 1
+        else:
+            print "Not found"
+
+    new_file.close()
 
 
-        x+=1
+print "Starting query search.."
 
-    if not found:
-        sys.exit("Name not found in query")
+queries = sortQueries(file, names)
+querySearch(queries, sequences)
 
-#find quereies in master file - adding cluster_size sequences to file
-for query in queries:
+file.close()
+file2.close()
+file3.close()
 
-    if i == cluster_size:
-        new_file.close()
-        i = 0
-        count += 1
+print "Finished!"
 
-    if i == 0:
-        new_file = open(output_destination + output_name + "." + str(cluster_size) + "." + str(count) + ".fasta", "w+")
-
-    found = False
-
-    for sequence_line in lines:
-
-        sequence_line = sequence_line.replace("\n", "").split(" ")[0]
-
-        if len(sequence_line) > 0:
-
-            if query == sequence_line and found is False:
-                #print query + "\t" + sequence_line
-                new_file.write(sequence_line + "\n")
-                found = True
-            elif found is True and sequence_line[0] != ">":
-                new_file.write(sequence_line + "\n")
-
-            elif found is True and sequence_line[0] is ">":
-                break
-
-    if found is True:
-        i+=1
-    else: print "Not found"
-
-new_file.close()
