@@ -1,0 +1,34 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -q COE,UI
+#$ -j y
+#$ -cwd
+#$ -N trimmingQ20
+#$ -o $JOB_NAME.$TASK_ID.log 
+#$ -ckpt user
+#$ -l std_mem
+
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+module load python/2.7
+
+TRIM_GALORE=/Users/acward/Earthworm_project/tools/trim_galore
+OUT=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/trimmed_data/Q20/
+READ_NAME=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/trimmed_data/file_names.txt
+RAW_READS=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/raw_data/
+CUT_ADAPT=/Users/acward/Earthworm_project/tools/cutadapt-1.6/bin/cutadapt
+date
+
+cd $RAW_READS
+
+$TRIM_GALORE/trim_galore -q 20 --phred33 --illumina --stringency 1 --path_to_cutadapt $CUT_ADAPT --length 35 --paired $RAW_READS/*.fq.gz -o $OUT
+
+date
+
+
+##################################:

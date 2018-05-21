@@ -1,0 +1,36 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -q COE
+#$ -j y
+#$ -cwd
+#$ -N gapCloserG5
+#$ -o $JOB_NAME.log 
+#$ -ckpt user
+#$ -l mid_mem
+#$ -M austin-ward@uiowa.edu
+#$ -m bea
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+module load python/2.7.10
+OMP_NUM_THREADS=16
+
+#exorting GapCloser
+export PATH=/Users/acward/Earthworm_project/tools/GapCloser:$PATH
+
+SCAFFOLD=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_5/SOAP_assembly/assembly_k75_Q30/genome_5.scafSeq
+CONFIG=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_5/SOAP_assembly/SOAPassembly30.config
+
+
+cd /Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_5/SOAP_assembly/assembly_k75_Q30/GapCloser
+
+GapCloser -a $SCAFFOLD -b $CONFIG -o closedGapsAssembly -l 150 -p 31 -t 16
+
+date
+
+
+##################################:

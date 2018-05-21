@@ -1,0 +1,47 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -q COE,UI
+#$ -j y
+#$ -cwd
+#$ -N busco_$TASK_ID
+#$ -o $JOB_NAME.log 
+#$ -ckpt user
+#$ -l std_mem
+#$ -M austin-ward@uiowa.edu
+#$ -m bea
+
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+module load python/2.7.10
+
+export AUGUSTUS_CONFIG_PATH=/Users/acward/Earthworm_project/tools/augustus-3.2.3/config
+SGE_TASK_ID=5
+GENOME=genome_$SGE_TASK_ID
+BUSCO=/Users/acward/Earthworm_project/tools/busco/scripts
+BLAST=/Users/acward/Earthworm_project/tools/ncbi-blast-2.6.0+/bin/
+INPUT=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/$GENOME/SOAP_assembly/*.scafSeq
+OUT_NAME=$GENOME-MULTIKMER
+OUT_PATH=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/$GENOME/SOAP_assembly/
+LINEAGE=/Users/acward/Earthworm_project/data/busco_genes/metazoa_odb9/
+AUGUSTUS=/Users/acward/Earthworm_project/tools/augustus-3.2.3/bin/
+
+
+PATH=$PATH:$AUGUSTUS
+
+date
+
+cd $OUT_PATH
+mkdir BUSCO
+cd BUSCO
+
+$BUSCO/run_BUSCO.py -i $INPUT -c 16 -o $OUT_NAME -l $LINEAGE -m genome
+
+date
+
+
+##################################:

@@ -1,0 +1,39 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -j y
+#$ -cwd
+#$ -N kmer
+#$ -o $JOB_NAME.$TASK_ID.log 
+#$ -ckpt user
+#$ -l std_mem
+#$ -M austin-ward@uiowa.edu
+#$ -m bea
+
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+module load python/2.7
+module load R/3.2.1
+module load zlib/1.2.8
+module load gcc/4.9.3
+
+#SGE_TASK_ID=7
+cd /Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/trimmed_data
+ls *.gz > file_names.txt
+
+mkdir kmer
+
+KMER_GENIE=/Users/acward/Earthworm_project/tools/kmergenie-1.7044
+OUT=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/trimmed_data/kmer2
+date
+
+$KMER_GENIE/kmergenie file_names.txt
+mv histogram* kmer/.
+date
+
+
+##################################:

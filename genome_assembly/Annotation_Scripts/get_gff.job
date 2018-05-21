@@ -1,0 +1,25 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 8
+#$ -q COE,UI
+#$ -j y
+#$ -cwd
+#$ -N gff
+#$ -o $JOB_NAME.log 
+#$ -ckpt user
+#$ -l std_mem
+
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+date
+cd /Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_3/Annotation/scaffolds.fasta.maker.output
+perl /Users/acward/Earthworm_project/tools/maker/bin/gff3_merge -d scaffolds.fasta_master_datastore_index.log
+
+date
+
+
+##################################:

@@ -1,0 +1,86 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -q COE
+#$ -j y
+#$ -cwd
+#$ -N SPADESG1M
+#$ -o $JOB_NAME.log 
+#$ -ckpt user
+#$ -l mid_mem
+#$ -M austin-ward@uiowa.edu
+#$ -m bea
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+module load gcc/4.9.3
+SGE_TASK_ID=1
+QVALUE=Q30
+GENOME=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID
+READS=$GENOME/trimmed_data/$QVALUE
+KMER=$READS/kmer/histograms.dat
+
+OUTPUT=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID/SPADES_assembly_MultiKmer
+SPADES=/Users/acward/Earthworm_project/tools/SPAdes-3.10.1-Linux/bin
+
+PE1F=BEN2_DES01511_HFHGMALXX_L7_1_val_1.fq.gz
+PE1R=BEN2_DES01511_HFHGMALXX_L7_2_val_2.fq.gz
+PE2F=BEN2_DES01511_HFHL7ALXX_L1_1_val_1.fq.gz
+PE2R=BEN2_DES01511_HFHL7ALXX_L1_2_val_2.fq.gz
+PE3F=BEN2_DES01511_HFHL7ALXX_L2_1_val_1.fq.gz
+PE3R=BEN2_DES01511_HFHL7ALXX_L2_2_val_2.fq.gz
+
+date
+
+max_kmer=0
+max_length=0
+
+while IFS=' ' read -r col1
+do
+
+    a=( $col1 )
+    if [ "${a[1]}" -gt "$max_length" ]
+    then
+        
+        max_length=${a[1]}
+        max_kmer=${a[0]}
+    fi
+done < "$KMER"
+
+#found=0
+#step=0
+#echo "Max kmer before"
+#echo $max_kmer
+
+#while [ $found -eq 0 ]
+#do
+#    difference=$(($max_kmer-75))
+#    let "mod = $difference % 5"
+#    
+#    if [ $mod -eq 0 ]
+#    then
+#        
+#        found=1
+#
+#        let "step = $difference / 5"
+#    else
+#        let "max_kmer = $max_kmer + 2"
+#    fi
+#done
+    
+#echo "Max kmer after: "
+#echo $max_kmer
+#echo "Step: "
+#echo $step
+
+cd $READS
+
+$SPADES/spades.py --continue -m 256 -k 75,93,113 --pe1-1 $PE1F --pe1-2 $PE1R --pe2-1 $PE2F --pe2-2 $PE2R --pe3-1 $PE3F --pe3-2 $PE3R -o $OUTPUT
+
+date
+
+
+##################################:

@@ -1,0 +1,57 @@
+#!/bin/bash
+##
+#$ -S /bin/bash
+#$ -pe smp 16
+#$ -q UI-HM
+#$ -j y
+#$ -cwd
+#$ -N REC30
+#$ -o $JOB_NAME.$TASK_ID.log 
+#$ -ckpt user
+#$ -l high_mem
+#$ -M austin-ward@uiowa.edu
+#$ -m bea
+
+####This is an example submission script qsub.sh
+####$ -l mid_mem
+####$ -l high_mem
+####This is an example submission script qsub.sh
+
+QVALUE=Q30
+#SGE_TASK_ID=7
+GENOME=/Users/acward/Earthworm_project/data/Earthworm_Genomes/NHHW161454/genome_$SGE_TASK_ID
+READS=$GENOME/trimmed_data
+KMER=$READS/kmer/histograms.dat
+ASSEMBLY=$GENOME/SOAP_assembly
+CONFIG=$GENOME/SOAP_assembly/SOAPassembly.config
+
+SOAP=/Users/acward/Earthworm_project/tools/SOAPdenovo2
+
+date
+
+max_kmer=0
+max_length=0
+
+while IFS=' ' read -r col1
+do
+
+    a=( $col1 )
+    if [ "${a[1]}" -gt "$max_length" ]
+    then
+        
+        max_length=${a[1]}
+        max_kmer=${a[0]}
+    fi
+done < "$KMER"
+
+echo "Max kmer value: "
+echo $max_kmer
+
+cd $ASSEMBLY
+
+$SOAP/SOAPdenovo-127mer all -s $CONFIG -K 75 -R -F -G 50 -u -M 1 -p 16 -d 1 -o genome_$SGE_TASK_ID
+
+date
+
+
+##################################:
