@@ -1,0 +1,10 @@
+# Busco id	Status	Contig	Start	End	Score	LengthEOG091G03H4	Duplicated	scaffold5094	42	1746	227.6	475
+EOG091G03H4	Duplicated	scaffold54442	3094	10278	219.9	330
+EOG091G06EF	Duplicated	scaffold27401	1	3225	102.3	229
+EOG091G06EF	Duplicated	scaffold29022	1408	8176	101.6	233
+EOG091G06LW	Duplicated	scaffold49713	1	7125	170.3	358
+EOG091G06LW	Duplicated	scaffold59901	1	6175	195.0	363
+EOG091G0IWR	Duplicated	scaffold47001	47	901	60.9	144
+EOG091G0IWR	Duplicated	scaffold55234	140	1017	70.6	108
+EOG091G0MRS	Duplicated	scaffold60412	1	1350	233.6	155
+EOG091G0MRS	Duplicated	scaffold64876	218	1845	207.9	155
